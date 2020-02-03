@@ -8,6 +8,7 @@ author:
 date: "2020/02/03"
 bibliography: resources/biblio.bib
 output: rmdformats::readthedown 
+number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -16,31 +17,19 @@ options(htmltools.dir.version = FALSE)
 load('data/data_workshop.Rdata')
 ```
 
+The contents of this document illustrate the basic use and advantages of the `tidyverse` suite of packages for data organization and management. The contents and examples were adapted from @Ameztegui2019.
+
+# Are you familiar with R and the tidyverse?
+
+1. [How long have you been working with R?](http://www.easypolls.net/poll.html?p=5e37cc74e4b02c7a707c4314)
+
+2. [Have you ever used a tidyverse package?](http://www.easypolls.net/poll.html?p=5e37ccfae4b02c7a707c4318)
+
 # The tidyverse
 
 The **tidyverse** is a collection of R packages designed for data science, as a suite aimed at easening the data analysis in all its steps.
 
 Created by Hadley Wickham, chief scientist of RStudio, and author of more than 30 R packages (`readr`, `ggplot2`, `plyr`, `devtools`, `roxygen2`, `rmarkdown`...). All packages share an underlying design philosophy, grammar, and data structures. 
-
-The contents in this documente were adapted from @Ameztegui2019.
-
-## The *tidyverse* and tidy data
-
-Data in **tidy** format eases the processing and analysis, particularly in vectorized languages as R. Data has to meet some requirement in order to be considered *tidy*:
-
-* Each row represents an observation
-* Columns comprise variables
-* Echa combination of row and column gathers a value
-
-![](resources/images/tidy.png)
-
-There are 5 examples of messy data we will explore here:
-
-* `Column headers are values, not variable names.`
-* Multiple variables are stored in one column.
-* Variables are stored in both rows and columns.
-* Multiple types of observational units are stored in the same table.
-* A single observational unit is stored in multiple tables.
 
 ## So what's exactly *in* the tidyverse?
 
@@ -283,7 +272,7 @@ arrange(trees, Dist)
 arrange(trees, desc(Dist))
 ```
 
-**Exercise 1**
+**Exercise 3**
 ```
   3.1 Sort plots by date and hour of measurement
   
@@ -313,7 +302,7 @@ mutate(
 )
 ```
 
-### Special functions:
+#### Special functions:
 
 - `if_else` allows to implement a conditional structure in which we determine the output value when that condition was met and the value when it happens otherwise:
 
@@ -324,20 +313,18 @@ mutate(
 )
 ```
 
-## Exercise 4
-
+**Exercise 4**
+```
   4.1 Get diameter growth (in cm) of each tree between IFN2 (DiamIf2)  and IFN3 (DiamIf3)
 
   4.2 Create two new variables with basal area of each tree (in $m^2$ per hectare), both for IFN2 and IFN3. Which is the species of the fastest-growing tree in basal area?
+```
 
-<br>
-
-.center[Clue:]
 $$
 AB = \frac{\pi}{4} · Diam^{2} · N
 $$
 
-## Reducing variables (`summarise`)
+### Reducing variables (`summarise`)
 
 ![](resources/images/summarise.png)
 
@@ -345,7 +332,7 @@ $$
 summarise(trees, mean_if3 = mean(DiamIf3))
 ```
 
-### Summary functions
+#### Summary functions
 
   - `min(x)`, `max(x)`, `quantile(x, p)`
   
@@ -376,6 +363,13 @@ summarise(
   mean_height_ifn3 = mean(HeiIf3, na.rm = TRUE),
   max_height_ifn3 = max(HeiIf3, na.rm = TRUE),
   min_height_ifn3 = min(HeiIf3, na.rm = TRUE)
+)
+```
+
+```{r grouped_summ_ex_3}
+summarise(
+  by_province,
+  R = cor(HeiIf3, DiamIf3)
 )
 ```
 **Exercise 5**
@@ -601,10 +595,27 @@ tb
 The package `tidyr` brings in a number of functions to organize our data. This often involves converting table-like formats between *wide* to *long* formats.
 
 
-## Wide versus long data
+# Wide versus long data
+
+## The *tidyverse* and tidy data
+
+Data in **tidy** format eases the processing and analysis, particularly in vectorized languages as R. Data has to meet some requirement in order to be considered *tidy*:
+
+* Each row represents an observation
+* Columns comprise variables
+* Echa combination of row and column gathers a value
+
+![](resources/images/tidy.png)
+
+There are 5 examples of messy data we will explore here:
+
+* `Column headers are values, not variable names.`
+* Multiple variables are stored in one column.
+* Variables are stored in both rows and columns.
+* Multiple types of observational units are stored in the same table.
+* A single observational unit is stored in multiple tables.
 
 Illustrating the difference between *wide* and *long* datasets is easiest using an example:
-
 
 ```{r}
 country_long <- data.frame(
@@ -749,7 +760,7 @@ c('a', 'b', 'c') %>%
 
 Can be used as an alternative to `apply` family functions (`lapply`, `vapply`...) which are sometimes unclean and difficult to use.
 
-## purrr's common structure
+### purrr's common structure
 
 ```r
 verb(.x, .f, ...)
